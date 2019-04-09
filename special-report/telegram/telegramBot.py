@@ -5,10 +5,11 @@ import telegram
 from telegram import Update, Bot, ParseMode
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler
 from telegram.ext import MessageHandler, Filters
+import ..app.proccess
 
 users = [] #(phone, chat_id)
-baseList = ["a", "b", "c"]
-outsideList = ["x", "y", "z"]
+#baseList = ["a", "b", "c"]
+#outsideList = ["x", "y", "z"]
 logger = logging.getLogger(__name__)
 
 
@@ -26,6 +27,7 @@ def action_start(bot: Bot, update: Update):
 def callback_minute(bot, job):
         #print("minute")
         for (phone,chat_id) in users:
+                [baseList, outsideList] = invokeGetReport(phone)
                 bot.send_message(chat_id=chat_id, text='Inside the base:')
                 text = ""
                 for person in baseList:
