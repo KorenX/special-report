@@ -26,6 +26,6 @@ def show_the_dog():
 @app.route('/photo', methods=['GET', 'POST'])
 def photo():
     if request.method == 'POST':
-        return fill_in_data(request.data, request.remote_addr)
+        return fill_in_data(request.data, request.environ.get('HTTP_X_REAL_IP', request.remote_addr))
     else:
         return show_the_dog()
