@@ -1,6 +1,5 @@
 import os
 import face_recognition
-import image_loader
 
 RELATIVE_PATH_TO_IMAGES = "../assets/images/"
 
