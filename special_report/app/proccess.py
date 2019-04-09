@@ -1,10 +1,9 @@
 import ..db.SpecialReport as dbReport
+import ..ml.image_handler as image_handler
 
-def recognize_in_frame():
-    return 0
 
-def proccess_frame(frame):
-    identified_persons = recognize_in_frame(frame)
+def proccess_frame(handler, frame):
+    identified_persons = handler.handle_data(frame)
     for identified_person in identified_persons:
         DB_SetArrival(identified_person[0], identified_person[1])
 
