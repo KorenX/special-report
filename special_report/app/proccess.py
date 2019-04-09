@@ -1,11 +1,13 @@
-import ..db.SpecialReport as dbReport
-import ..ml.image_handler as image_handler
+from special_report.db.SpecialReport import DB_SetArrival, DB_GetReport, DB_ResetArrivals
 
 
-def proccess_frame(handler, frame):
-    identified_persons = handler.handle_data(frame)
-    for identified_person in identified_persons:
-        DB_SetArrival(identified_person[0], identified_person[1])
+def proccess_frame(handler, **kwargs):
+    identified_persons = handler.handle_data(**kwargs)
+
+    print("Identified persons", identified_persons)
+
+    for key, val in identified_persons.items():
+        DB_SetArrival(key, val)
 
 ### To Goldberg's scheduler:
 def invokeGetReport(phoneNumber):
@@ -25,5 +27,5 @@ def invokeGetReport(phoneNumber):
     return [arrivedDudes, unarrivedDudes]
 
 def invokeResetArrivals():
-    return DB_ResetArrivals()
+    DB_ResetArrivals()
 

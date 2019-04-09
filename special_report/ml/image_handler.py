@@ -6,29 +6,42 @@ import cv2
 from keras.models import load_model
 import numpy as np
 
-RELATIVE_PATH_TO_IMAGES = "../assets/images/"
+ASSETS_DIR = os.path.join(os.path.dirname(__file__), os.path.pardir, "assets")
+RELATIVE_PATH_TO_IMAGES = os.path.join(ASSETS_DIR, "images")
 DEFAULT_EMOTION = "neutral"
 
 class image_handler:
     def init(self):
         self.members = {}
         self.load_members()
-        detection_model_path = '../assets/models/haarcascade_frontalface_default.xml'
-        emotion_model_path = '../assets/models/_mini_XCEPTION.102-0.66.hdf5'
+        detection_model_path = os.path.join(ASSETS_DIR, 'models/haarcascade_frontalface_default.xml')
+        emotion_model_path = os.path.join(ASSETS_DIR, 'models/_mini_XCEPTION.102-0.66.hdf5')
         self.face_detection = cv2.CascadeClassifier(detection_model_path)
         self.emotion_classifier = load_model(emotion_model_path, compile=False)
         self.EMOTIONS = ["angry", "disgust", "scared", "happy", "sad", "surprised", "neutral"]
 
-    def handle_data(self, image):
+        print("Memebers", self.members)
+
+    def handle_data(self, image=None, path=None, **kwargs):
         ''' brief handles the data from the camera and updates DB spaces
 
             :image: the image from the camera
         '''
+
+        if not image:
+            if path:
+                image = face_recognition.load_image_file(path)
+            else:
+                raise ValueError
+
         personIDs = self.find_persons_in_image(image)
-        emotions = self.get_emotions(image)
+        # emotions = self.get_emotions(image)
+        emotions = []
+
+        print("IDS", personIDs)
+        print("Emotions", emotions)
 
         dictionary = {}
-
         i = 0
         for personid in personIDs:
             if i < len(emotions):
@@ -47,10 +60,11 @@ class image_handler:
             :return: a list of the ids of people in the image
         '''
         codes = face_recognition.face_encodings(image)
+
         ids = []
         for code in codes:
             for member in self.members:
-                if face_recognition.compare_faces(self.members[member], code)[0]:
+                if face_recognition.compare_faces([self.members[member]], code)[0]:
                     ids.append(member)
                     break
         return ids
@@ -60,7 +74,7 @@ class image_handler:
         '''
         for filename in os.listdir(RELATIVE_PATH_TO_IMAGES):
             if filename.endswith(".jpg") or filename.endswith(".png") or filename.endswith(".jpeg"):
-                image = face_recognition.load_image_file(RELATIVE_PATH_TO_IMAGES + filename)
+                image = face_recognition.load_image_file(os.path.join(RELATIVE_PATH_TO_IMAGES, filename))
                 encoding = face_recognition.face_encodings(image)[0]
                 name = filename.split('.')[0]
                 self.members[name] = encoding

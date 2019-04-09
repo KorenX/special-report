@@ -1,20 +1,20 @@
 import logging
 import requests
 import re
-import sys
 import telegram
 from telegram import Update, Bot, ParseMode
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler
 from telegram.ext import MessageHandler, Filters
 
-sys.path.append("../app/")
-from proccess import invokeGetReport
+
+from special_report.app.proccess import invokeGetReport
 
 users = [] #(phone, chat_id)
 #baseList = ["a", "b", "c"]
 #outsideList = ["x", "y", "z"]
 logger = logging.getLogger(__name__)
 
+INTERVAL = 20
 
 def action_start(bot: Bot, update: Update):
         print("chat_id started", update.message.chat_id)
@@ -35,12 +35,17 @@ def callback_minute(bot, job):
                 text = ""
                 for person in baseList:
                         text += person + "\n"
-                bot.send_message(chat_id=chat_id, text=text)
+                
+                if text:
+                        bot.send_message(chat_id=chat_id, text=text)
                 bot.send_message(chat_id=chat_id, text='Outside the base:')
+
                 text = ""
                 for person in outsideList:
                         text += person + "\n"
-                bot.send_message(chat_id=chat_id, text=text)
+                
+                if text:
+                        bot.send_message(chat_id=chat_id, text=text)
 
 def _error(bot: Bot, update: Update, e: BaseException):
         logger.error(e.message)
@@ -56,10 +61,10 @@ def contact_callback(bot, update):
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard)
         bot.send_message(chat_id=update.message.chat_id, text="", reply_markup=reply_markup)
 
-def main():
+def start_bot():
         updater = Updater('892444494:AAFCYNd48UN2CdH1T6Ck7hVIXHympFGYk6c')
         
-        job_minute = updater.job_queue.run_repeating(callback_minute, interval=30, first=0)
+        job_minute = updater.job_queue.run_repeating(callback_minute, interval=INTERVAL, first=0)
 
         # Add handlers
         updater.dispatcher.add_handler(CommandHandler('start', action_start))
@@ -67,10 +72,10 @@ def main():
         updater.dispatcher.add_handler(MessageHandler(Filters.contact, contact_callback))
 
         updater.start_polling()
-        updater.idle()
+        # updater.idle()
 
         while True:
                 pass
 
 if __name__ == '__main__':
-    main()
+    start_bot()

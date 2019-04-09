@@ -12,4 +12,5 @@ run:
 
 clean:
 	rm -rf ${VENV}
+	rm -rf SpecialReport.db
 	find -iname "*.pyc" -delete
