@@ -12,7 +12,7 @@ def video2frame():
     video = cv2.VideoCapture(0)
 
     while True:
-        sucsess, image = video.read()
+        success, image = video.read()
         cv2.imwrite("frame.jpg", image)  # save frame as JPEG file
         with open("frame.jpg", "rb") as image_file:
             encoded_string = base64.b64encode(image_file.read())
