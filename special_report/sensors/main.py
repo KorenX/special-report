@@ -1,5 +1,6 @@
 import ImgReceive as ImgRcv
 
+
 ObjectA = ImgRcv.video2frame()
 
 objectB_url = "https://192.168.43.1:8080/shot.jpg"
