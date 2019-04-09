@@ -13,8 +13,8 @@ class image_handler:
     def init(self):
         self.members = {}
         self.load_members()
-        detection_model_path = 'haarcascade_files/haarcascade_frontalface_default.xml'
-        emotion_model_path = 'models/_mini_XCEPTION.102-0.66.hdf5'
+        detection_model_path = '../assets/models/haarcascade_frontalface_default.xml'
+        emotion_model_path = '../assets/models/_mini_XCEPTION.102-0.66.hdf5'
         self.face_detection = cv2.CascadeClassifier(detection_model_path)
         self.emotion_classifier = load_model(emotion_model_path, compile=False)
         self.EMOTIONS = ["angry", "disgust", "scared", "happy", "sad", "surprised", "neutral"]
